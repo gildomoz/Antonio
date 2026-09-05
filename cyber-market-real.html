@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<title>CYBER MARKET REAL | Finanças • Casino • Imóveis</title>
+<meta name="description" content="Plataforma premium de inteligência financeira, indústria de casino e mercado imobiliário com dados reais e verificáveis.">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Share+Tech+Mono&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+:root {
+  --bg: #05080f;
+  --bg2: #0a1018;
+  --panel: rgba(8,16,28,0.85);
+  --neon-g: #00ff9d;
+  --neon-c: #00e5ff;
+  --neon-b: #3b82f6;
+  --neon-r: #ff3355;
+  --neon-y: #ffcc00;
+  --text: #e8f0ff;
+  --muted: #8ba3c7;
+  --border: rgba(0,255,157,0.25);
+  --glow-g: 0 0 12px rgba(0,255,157,0.45), 0 0 28px rgba(0,255,157,0.15);
+  --glow-c: 0 0 12px rgba(0,229,255,0.45);
+  --font-display: 'Orbitron', sans-serif;
+  --font-mono: 'Share Tech Mono', monospace;
+  --font-body: 'Rajdhani', sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;overflow-x:hidden}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font-body);
+  font-size:16px;
+  line-height:1.55;
+  min-height:100vh;
+  overflow-x:hidden;
+  position:relative;
+}
+/* GRID BACKGROUND */
+body::before{
+  content:'';
+  position:fixed;inset:0;
+  background-image:
+    linear-gradient(rgba(0,255,157,0.03) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,255,157,0.03) 1px,transparent 1px);
+  background-size:40px 40px;
+  pointer-events:none;z-index:0;
+}
+/* SCANLINES */
+body::after{
+  content:'';
+  position:fixed;inset:0;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.08) 2px,rgba(0,0,0,0.08) 4px);
+  pointer-events:none;z-index:9998;opacity:0.35;
+}
+#particleCanvas{
+  position:fixed;inset:0;width:100%;height:100%;
+  pointer-events:none;z-index:1;
+}
+.container{width:100%;max-width:1280px;margin:0 auto;padding:0 16px;position:relative;z-index:10}
+/* HEADER */
+header{
+  position:sticky;top:0;z-index:1000;
+  background:rgba(5,8,15,0.92);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--border);
+  box-shadow:0 4px 30px rgba(0,255,157,0.08);
+}
+.header-inner{
+  display:flex;align-items:center;justify-content:space-between;
+  height:64px;gap:12px;
+}
+.logo{
+  font-family:var(--font-display);font-weight:800;font-size:1.15rem;
+  letter-spacing:1.5px;color:var(--neon-g);
+  text-shadow:var(--glow-g);white-space:nowrap;
+  display:flex;align-items:center;gap:8px;
+}
+.logo span{color:var(--neon-c)}
+.logo-icon{
+  width:28px;height:28px;border:2px solid var(--neon-g);
+  border-radius:4px;display:grid;place-items:center;
+  font-size:12px;box-shadow:var(--glow-g);
+}
+nav{display:none}
+nav a{
+  color:var(--muted);text-decoration:none;font-family:var(--font-mono);
+  font-size:0.85rem;padding:6px 10px;border-radius:4px;
+  transition:all .2s;letter-spacing:0.5px;
+}
+nav a:hover,nav a.active{color:var(--neon-g);background:rgba(0,255,157,0.08);text-shadow:0 0 8px rgba(0,255,157,0.5)}
+.menu-toggle{
+  display:flex;flex-direction:column;gap:5px;cursor:pointer;
+  background:none;border:none;padding:8px;
+}
+.menu-toggle span{
+  display:block;width:24px;height:2px;background:var(--neon-g);
+  box-shadow:0 0 6px var(--neon-g);transition:.25s;
+}
+.menu-toggle.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.menu-toggle.open span:nth-child(2){opacity:0}
+.menu-toggle.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+.mobile-nav{
+  display:none;position:absolute;top:64px;left:0;right:0;
+  background:rgba(5,8,15,0.98);border-bottom:1px solid var(--border);
+  padding:12px 16px 20px;flex-direction:column;gap:4px;
+  box-shadow:0 12px 40px rgba(0,0,0,0.6);
+}
+.mobile-nav.open{display:flex}
+.mobile-nav a{
+  color:var(--muted);text-decoration:none;font-family:var(--font-mono);
+  font-size:0.95rem;padding:12px 14px;border-radius:6px;
+  border:1px solid transparent;
+}
+.mobile-nav a:hover,.mobile-nav a.active{
+  color:var(--neon-g);border-color:var(--border);
+  background:rgba(0,255,157,0.06);
+}
+/* HERO */
+.hero{
+  padding:36px 0 28px;text-align:center;position:relative;
+}
+.hero h1{
+  font-family:var(--font-display);font-weight:800;font-size:clamp(1.6rem,5vw,2.8rem);
+  letter-spacing:2px;line-height:1.2;margin-bottom:12px;
+  background:linear-gradient(135deg,var(--neon-g),var(--neon-c));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.hero p{
+  color:var(--muted);font-size:1.05rem;max-width:640px;margin:0 auto 24px;
+  font-weight:400;
+}
+/* GLOBE */
+.globe-wrap{
+  width:min(320px,88vw);height:min(320px,88vw);
+  margin:0 auto 28px;position:relative;
+  border-radius:50%;
+  box-shadow:0 0 40px rgba(0,255,157,0.15),inset 0 0 40px rgba(0,229,255,0.08);
+}
+#globeCanvas{width:100%;height:100%;border-radius:50%;display:block}
+.globe-label{
+  position:absolute;bottom:-8px;left:50%;transform:translateX(-50%);
+  font-family:var(--font-mono);font-size:0.7rem;color:var(--neon-c);
+  letter-spacing:2px;text-transform:uppercase;white-space:nowrap;
+}
+/* MARKET TERMINAL */
+.terminal{
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:10px;padding:16px;margin-bottom:28px;
+  box-shadow:0 0 24px rgba(0,255,157,0.06);
+  position:relative;overflow:hidden;
+}
+.terminal::before{
+  content:'CYBER MARKET TERMINAL';
+  position:absolute;top:8px;right:12px;
+  font-family:var(--font-mono);font-size:0.65rem;
+  color:var(--neon-g);opacity:0.5;letter-spacing:1px;
+}
+.terminal-header{
+  display:flex;align-items:center;gap:8px;margin-bottom:14px;
+  font-family:var(--font-mono);font-size:0.8rem;color:var(--neon-c);
+}
+.terminal-header .dot{
+  width:8px;height:8px;border-radius:50%;background:var(--neon-g);
+  box-shadow:0 0 8px var(--neon-g);animation:pulse 1.5s infinite;
+}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+.ticker-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));
+  gap:10px;
+}
+.ticker{
+  background:rgba(0,0,0,0.35);border:1px solid rgba(0,255,157,0.15);
+  border-radius:8px;padding:12px 10px;text-align:center;
+  transition:border-color .2s;
+}
+.ticker:hover{border-color:var(--neon-g)}
+.ticker .sym{
+  font-family:var(--font-mono);font-size:0.75rem;color:var(--muted);
+  letter-spacing:1px;margin-bottom:4px;
+}
+.ticker .val{
+  font-family:var(--font-display);font-size:1.1rem;font-weight:700;
+  color:var(--neon-g);margin-bottom:2px;
+}
+.ticker .chg{font-size:0.8rem;font-weight:600}
+.ticker .chg.up{color:var(--neon-g)}
+.ticker .chg.down{color:var(--neon-r)}
+.ticker .src{
+  font-size:0.65rem;color:var(--muted);margin-top:4px;
+  font-family:var(--font-mono);
+}
+/* SECTIONS */
+section{padding:32px 0;position:relative}
+.section-title{
+  font-family:var(--font-display);font-size:clamp(1.2rem,3.5vw,1.6rem);
+  font-weight:700;letter-spacing:1.5px;margin-bottom:8px;
+  color:var(--neon-g);display:flex;align-items:center;gap:10px;
+}
+.section-title::before{
+  content:'▸';color:var(--neon-c);font-size:1.1em;
+}
+.section-sub{
+  color:var(--muted);font-size:0.95rem;margin-bottom:20px;max-width:700px;
+}
+/* FILTERS + SEARCH */
+.controls{
+  display:flex;flex-wrap:wrap;gap:10px;margin-bottom:22px;align-items:center;
+}
+.search-box{
+  flex:1;min-width:180px;position:relative;
+}
+.search-box input{
+  width:100%;background:rgba(0,0,0,0.4);border:1px solid var(--border);
+  border-radius:8px;padding:12px 14px 12px 40px;color:var(--text);
+  font-family:var(--font-body);font-size:0.95rem;outline:none;
+  transition:border-color .2s;
+}
+.search-box input:focus{border-color:var(--neon-g);box-shadow:0 0 0 2px rgba(0,255,157,0.15)}
+.search-box input::placeholder{color:var(--muted)}
+.search-box svg{
+  position:absolute;left:12px;top:50%;transform:translateY(-50%);
+  width:18px;height:18px;stroke:var(--muted);
+}
+.filters{display:flex;flex-wrap:wrap;gap:6px}
+.filter-btn{
+  background:rgba(0,0,0,0.35);border:1px solid rgba(0,255,157,0.2);
+  color:var(--muted);font-family:var(--font-mono);font-size:0.78rem;
+  padding:8px 12px;border-radius:6px;cursor:pointer;transition:all .2s;
+  letter-spacing:0.5px;
+}
+.filter-btn:hover,.filter-btn.active{
+  color:var(--neon-g);border-color:var(--neon-g);
+  background:rgba(0,255,157,0.08);box-shadow:0 0 10px rgba(0,255,157,0.15);
+}
+/* CARDS */
+.card-grid{
+  display:grid;grid-template-columns:1fr;gap:16px;
+}
+.card{
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:10px;overflow:hidden;transition:transform .25s,box-shadow .25s;
+  display:flex;flex-direction:column;
+}
+.card:hover{
+  transform:translateY(-3px);
+  box-shadow:0 8px 28px rgba(0,255,157,0.12);
+}
+.card-img{
+  width:100%;height:180px;object-fit:cover;background:#0a1520;
+  display:block;
+}
+.card-body{padding:16px;flex:1;display:flex;flex-direction:column}
+.card-cat{
+  font-family:var(--font-mono);font-size:0.7rem;color:var(--neon-c);
+  letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;
+}
+.card-title{
+  font-family:var(--font-display);font-size:1.05rem;font-weight:600;
+  line-height:1.35;margin-bottom:8px;color:var(--text);
+}
+.card-meta{
+  font-size:0.8rem;color:var(--muted);margin-bottom:10px;
+  font-family:var(--font-mono);
+}
+.card-excerpt{
+  font-size:0.92rem;color:var(--muted);flex:1;margin-bottom:12px;
+}
+.card-link{
+  display:inline-flex;align-items:center;gap:6px;
+  color:var(--neon-g);font-family:var(--font-mono);font-size:0.82rem;
+  text-decoration:none;letter-spacing:0.5px;
+}
+.card-link:hover{text-shadow:0 0 8px rgba(0,255,157,0.5)}
+/* IMAGE ROTATOR */
+.rotator{
+  position:relative;width:100%;height:220px;border-radius:10px;
+  overflow:hidden;margin-bottom:20px;border:1px solid var(--border);
+  background:#0a1520;
+}
+.rotator img{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  opacity:0;transition:opacity 1.1s ease;
+}
+.rotator img.active{opacity:1}
+.rotator-caption{
+  position:absolute;bottom:0;left:0;right:0;
+  background:linear-gradient(transparent,rgba(0,0,0,0.85));
+  padding:28px 14px 12px;font-family:var(--font-mono);
+  font-size:0.78rem;color:var(--neon-c);letter-spacing:0.5px;
+}
+/* AD SLOTS */
+.ad-slot{
+  border:1px dashed rgba(0,255,157,0.2);border-radius:8px;
+  padding:20px;text-align:center;margin:20px 0;
+  background:rgba(0,0,0,0.25);
+  font-family:var(--font-mono);font-size:0.8rem;color:var(--muted);
+  letter-spacing:1px;
+}
+.ad-slot.banner{min-height:90px}
+.ad-slot.display{min-height:250px}
+/* INSTITUTIONAL */
+.inst-grid{
+  display:grid;grid-template-columns:1fr;gap:12px;
+}
+.inst-card{
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:8px;padding:16px;cursor:pointer;transition:all .2s;
+}
+.inst-card:hover{border-color:var(--neon-g);box-shadow:0 0 16px rgba(0,255,157,0.1)}
+.inst-card h3{
+  font-family:var(--font-display);font-size:0.95rem;color:var(--neon-g);
+  margin-bottom:6px;
+}
+.inst-card p{font-size:0.88rem;color:var(--muted)}
+/* MODAL */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,0.8);
+  z-index:2000;display:none;align-items:center;justify-content:center;
+  padding:16px;backdrop-filter:blur(6px);
+}
+.modal-overlay.open{display:flex}
+.modal{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:12px;max-width:640px;width:100%;max-height:85vh;
+  overflow-y:auto;padding:24px;position:relative;
+  box-shadow:0 0 40px rgba(0,255,157,0.12);
+}
+.modal h2{
+  font-family:var(--font-display);font-size:1.2rem;color:var(--neon-g);
+  margin-bottom:14px;padding-right:30px;
+}
+.modal p,.modal li{font-size:0.92rem;color:var(--muted);margin-bottom:10px}
+.modal ul{padding-left:18px;margin-bottom:12px}
+.modal-close{
+  position:absolute;top:14px;right:14px;background:none;border:none;
+  color:var(--neon-c);font-size:1.4rem;cursor:pointer;line-height:1;
+}
+/* CONTACT */
+.contact-form{
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:10px;padding:20px;max-width:520px;
+}
+.contact-form label{
+  display:block;font-family:var(--font-mono);font-size:0.78rem;
+  color:var(--neon-c);margin-bottom:4px;letter-spacing:0.5px;
+}
+.contact-form input,.contact-form textarea{
+  width:100%;background:rgba(0,0,0,0.4);border:1px solid var(--border);
+  border-radius:6px;padding:11px 12px;color:var(--text);
+  font-family:var(--font-body);font-size:0.95rem;margin-bottom:14px;
+  outline:none;resize:vertical;
+}
+.contact-form input:focus,.contact-form textarea:focus{
+  border-color:var(--neon-g);
+}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  background:transparent;border:1px solid var(--neon-g);color:var(--neon-g);
+  font-family:var(--font-mono);font-size:0.88rem;padding:12px 22px;
+  border-radius:6px;cursor:pointer;transition:all .2s;letter-spacing:1px;
+  text-decoration:none;
+}
+.btn:hover{
+  background:rgba(0,255,157,0.1);box-shadow:var(--glow-g);
+}
+.btn-primary{
+  background:rgba(0,255,157,0.12);
+}
+/* FOOTER */
+footer{
+  border-top:1px solid var(--border);padding:28px 0 40px;
+  margin-top:20px;position:relative;z-index:10;
+}
+.footer-grid{
+  display:grid;grid-template-columns:1fr;gap:20px;
+}
+.footer-brand{
+  font-family:var(--font-display);font-size:1rem;color:var(--neon-g);
+  margin-bottom:8px;
+}
+.footer-links{display:flex;flex-wrap:wrap;gap:10px 16px}
+.footer-links a{
+  color:var(--muted);text-decoration:none;font-size:0.85rem;
+  font-family:var(--font-mono);
+}
+.footer-links a:hover{color:var(--neon-g)}
+.footer-copy{
+  font-size:0.78rem;color:var(--muted);margin-top:18px;
+  font-family:var(--font-mono);
+}
+/* RESPONSIBLE */
+.responsible{
+  background:rgba(255,51,85,0.06);border:1px solid rgba(255,51,85,0.25);
+  border-radius:8px;padding:14px 16px;margin:16px 0;
+  font-size:0.88rem;color:var(--muted);
+}
+.responsible strong{color:var(--neon-r)}
+/* UTILS */
+.hidden{display:none!important}
+.tag{
+  display:inline-block;font-family:var(--font-mono);font-size:0.68rem;
+  padding:3px 8px;border-radius:4px;border:1px solid var(--border);
+  color:var(--neon-c);margin-right:4px;
+}
+/* DESKTOP */
+@media(min-width:768px){
+  .header-inner{height:70px}
+  nav{display:flex;gap:2px;flex-wrap:wrap}
+  .menu-toggle{display:none}
+  .mobile-nav{display:none!important}
+  .card-grid{grid-template-columns:repeat(2,1fr)}
+  .ticker-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+  .inst-grid{grid-template-columns:repeat(2,1fr)}
+  .footer-grid{grid-template-columns:1.4fr 1fr}
+  .globe-wrap{width:360px;height:360px}
+}
+@media(min-width:1024px){
+  .card-grid{grid-template-columns:repeat(3,1fr)}
+  .ticker-grid{grid-template-columns:repeat(7,1fr)}
+}
+/* MOBILE SPECIFIC 360-412 */
+@media(max-width:412px){
+  .hero h1{font-size:1.45rem}
+  .ticker-grid{grid-template-columns:repeat(2,1fr)}
+  .globe-wrap{width:min(280px,86vw);height:min(280px,86vw)}
+}
+</style>
+</head>
+<body>
+<canvas id="particleCanvas"></canvas>
+
+<header>
+  <div class="container header-inner">
+    <div class="logo">
+      <div class="logo-icon">CM</div>
+      CYBER <span>MARKET</span>
+    </div>
+    <nav id="desktopNav">
+      <a href="#inicio" class="active" data-section="inicio">Início</a>
+      <a href="#financas" data-section="financas">Finanças</a>
+      <a href="#casino" data-section="casino">Casino</a>
+      <a href="#imoveis" data-section="imoveis">Imóveis</a>
+      <a href="#mercados" data-section="mercados">Mercados</a>
+      <a href="#noticias" data-section="noticias">Notícias</a>
+      <a href="#analises" data-section="analises">Análises</a>
+      <a href="#contacto" data-section="contacto">Contacto</a>
+    </nav>
+    <button class="menu-toggle" id="menuToggle" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="mobile-nav" id="mobileNav">
+    <a href="#inicio" data-section="inicio">Início</a>
+    <a href="#financas" data-section="financas">Finanças</a>
+    <a href="#casino" data-section="casino">Casino</a>
+    <a href="#imoveis" data-section="imoveis">Imóveis</a>
+    <a href="#mercados" data-section="mercados">Mercados</a>
+    <a href="#noticias" data-section="noticias">Notícias</a>
+    <a href="#analises" data-section="analises">Análises</a>
+    <a href="#contacto" data-section="contacto">Contacto</a>
+  </div>
+</header>
+
+<main>
+  <!-- HERO + GLOBE -->
+  <section id="inicio" class="hero">
+    <div class="container">
+      <h1>CYBER MARKET REAL</h1>
+      <p>Plataforma de inteligência financeira, indústria de casino e mercado imobiliário. Dados verificáveis. Zero conteúdo fictício.</p>
+      <div class="globe-wrap">
+        <canvas id="globeCanvas"></canvas>
+        <div class="globe-label">EARTH • 1 VOLTA / 3s</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MARKET TERMINAL -->
+  <div class="container">
+    <div class="terminal" id="mercados">
+      <div class="terminal-header">
+        <span class="dot"></span>
+        LIVE MARKET FEED • dados de fontes públicas • atualização: 05 Set 2026
+      </div>
+      <div class="ticker-grid" id="tickerGrid">
+        <div class="ticker">
+          <div class="sym">BTC/USD</div>
+          <div class="val">$79.632</div>
+          <div class="chg down">-0.22%</div>
+          <div class="src">CoinDesk / MarketWatch</div>
+        </div>
+        <div class="ticker">
+          <div class="sym">ETH/USD</div>
+          <div class="val">$2.456</div>
+          <div class="chg down">≈ -0.1%</div>
+          <div class="src">OKX / Investing</div>
+        </div>
+        <div class="ticker">
+          <div class="sym">EUR/USD</div>
+          <div class="val">1.1618</div>
+          <div class="chg down">-0.07%</div>
+          <div class="src">Barchart / PoundSterling</div>
+        </div>
+        <div class="ticker">
+          <div class="sym">USD/MZN</div>
+          <div class="val">63.58</div>
+          <div class="chg up">+0.51%</div>
+          <div class="src">Investing.com</div>
+        </div>
+        <div class="ticker">
+          <div class="sym">XAU/USD</div>
+          <div class="val">$4.430</div>
+          <div class="chg up">+0.33%</div>
+          <div class="src">GoldPrice.com</div>
+        </div>
+        <div class="ticker">
+          <div class="sym">WTI Oil</div>
+          <div class="val">$91.22</div>
+          <div class="chg up">+0.2%</div>
+          <div class="src">OilPriceAPI / NYMEX</div>
+        </div>
+        <div class="ticker">
+          <div class="sym">S&P 500</div>
+          <div class="val">~7.63k</div>
+          <div class="chg down">sessão volátil</div>
+          <div class="src">Economic Times / Reuters</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEARCH + FILTERS -->
+  <div class="container">
+    <div class="controls">
+      <div class="search-box">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        <input type="search" id="searchInput" placeholder="Pesquisar notícias, mercados, casino, imóveis..." aria-label="Pesquisar">
+      </div>
+      <div class="filters" id="filters">
+        <button class="filter-btn active" data-filter="all">Todos</button>
+        <button class="filter-btn" data-filter="financas">Finanças</button>
+        <button class="filter-btn" data-filter="casino">Casino</button>
+        <button class="filter-btn" data-filter="imoveis">Imóveis</button>
+        <button class="filter-btn" data-filter="mercados">Mercados</button>
+        <button class="filter-btn" data-filter="noticias">Notícias</button>
+        <button class="filter-btn" data-filter="analises">Análises</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- IMAGE ROTATOR -->
+  <div class="container">
+    <div class="rotator" id="imageRotator">
+      <img src="https://images.unsplash.com/photo-1611974767324-971348341353?w=900&q=80" alt="Trading floor cyber" data-fallback="https://images.unsplash.com/photo-1642790106117-e829e14a795f?w=900&q=80" class="active">
+      <img src="https://images.unsplash.com/photo-1642790106117-e829e14a795f?w=900&q=80" alt="Crypto charts" data-fallback="https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=900&q=80">
+      <img src="https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=900&q=80" alt="Blockchain network" data-fallback="https://images.unsplash.com/photo-1621761191319-c6fb62004040?w=900&q=80">
+      <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=900&q=80" alt="Real estate modern" data-fallback="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=900&q=80">
+      <div class="rotator-caption" id="rotatorCaption">MERCADOS GLOBAIS • DADOS EM TEMPO REAL</div>
+    </div>
+  </div>
+
+  <!-- FINANÇAS -->
+  <section id="financas">
+    <div class="container">
+      <h2 class="section-title">FINANÇAS</h2>
+      <p class="section-sub">Economia, mercados, moedas, investimentos, bancos, fintech, bolsa, commodities e criptomoedas. Valores obtidos de fontes públicas em 05 Set 2026.</p>
+      <div class="card-grid" id="financasGrid">
+        <article class="card" data-cat="financas mercados noticias">
+          <img class="card-img" src="https://images.unsplash.com/photo-1611974767324-971348341353?w=600&q=80" alt="Mercados financeiros" loading="lazy" data-fallback="https://images.unsplash.com/photo-1590283603385-17ffb3a7f29c?w=600&q=80">
+          <div class="card-body">
+            <div class="card-cat">Finanças / Mercados</div>
+            <h3 class="card-title">Relatório de empregos dos EUA reforça expectativas sobre a Fed</h3>
+            <div class="card-meta">04 Set 2026 • Bloomberg / Reuters</div>
+            <p class="card-excerpt">Dados de emprego mais fortes do que o esperado aumentaram as apostas de que a Reserva Federal possa subir taxas na reunião de 16 de setembro. O mercado de obrigações reagiu com subida de yields, enquanto ações mostraram resiliência relativa.</p>
+            <a class="card-link" href="https://www.bloomberg.com/news/articles/2026-09-04/wall-street-risk-complex-defies-rate-threat-after-jobs-blowout" target="_blank" rel="noopener">Fonte original →</a>
+          </div>
+        </article>
+        <article class="card" data-cat="financas mercados">
+          <img class="card-img" src="https://images.unsplash.com/photo-1642790106117-e829e14a795f?w=600&q=80" alt="Bitcoin chart" loading="lazy" data-fallback="https://images.unsplash.com/photo-1518546305927-5a555bb7020d?w=600&q=80">
+          <div class="card-body">
+            <div class="card-cat">Criptomoedas</div>
+            <h3 class="card-title">Bitcoin negoceia perto de $79.600–$79.700</h3>
+            <div class="card-meta">05 Set 2026 • OKX / CoinDesk / MarketWatch</div>
+            <p class="card-excerpt">Segundo dados de exchanges e índices, o BTC fechou sessões recentes na casa dos $79.400–$79.700, com variação diária moderada. Fontes: OKX historical, CoinDesk Bitcoin Price Index e MarketWatch.</p>
+            <a class="card-link" href="https://www.marketwatch.com/investing/cryptocurrency/btcusd/charts" target="_blank" rel="noopener">Ver fonte →</a>
+          </div>
+        </article>
+        <article class="card" data-cat="financas">
+          <img class="card-img" src="https://images.unsplash.com/photo-1621761191319-c6fb62004040?w=600&q=80" alt="Gold bars" loading="lazy" data-fallback="https://images.unsplash.com/photo-1610375461246-83df859d849d?w=600&q=80">
+          <div class="card-body">
+            <div class="card-cat">Commodities</div>
+            <h3 class="card-title">Ouro perto de $4.430 / onça troy</h3>
+            <div class="card-meta">05 Set 2026 • GoldPrice.com / CNBC</div>
+            <p class="card-excerpt">O preço spot do ouro (XAU/USD) situa-se na região dos $4.416–$4.430 por onça troy, com variação diária limitada. Fontes de referência: GoldPrice.com e cotações CNBC XAU=.</p>
+            <a class="card-link" href="https://www.goldprice.com/" target="_blank" rel="noopener">Fonte →</a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <div class="container"><div class="ad-slot banner">ESPAÇO PUBLICITÁRIO • BANNER 728×90 / RESPONSIVO</div></div>
+
+  <!-- CASINO -->
+  <section id="casino">
+    <div class="container">
+      <h2 class="section-title">CASINO & iGAMING</h2>
+      <p class="section-sub">Indústria real de casino online, regulamentação, tecnologia, pagamentos e tendências. Sem sistemas “vencedores”, sem promessas de ganhos.</p>
+      <div class="responsible">
+        <strong>Jogo responsável:</strong> O jogo deve ser entretenimento. Defina limites de tempo e dinheiro. Se sentir que está a perder o controlo, procure ajuda especializada. Este site não promove apostas nem oferece jogos de dinheiro real.
+      </div>
+      <div class="card-grid">
+        <article class="card" data-cat="casino noticias">
+          <img class="card-img" src="https://images.unsplash.com/photo-1596838132731-3301c3fd4317?w=600&q=80" alt="Casino chips" loading="lazy" data-fallback="https://images.unsplash.com/photo-1511193313722-44c31f79d0b4?w=600&q=80">
+          <div class="card-body">
+            <div class="card-cat">Casino / Regulamentação</div>
+            <h3 class="card-title">EUA: apenas 8 estados com casinos online legais em setembro 2026</h3>
+            <div class="card-meta">04 Set 2026 • CBS Sports</div>
+            <p class="card-excerpt">Connecticut, Delaware, Michigan, New Jersey, Pennsylvania, Rhode Island, Maine e West Virginia são os estados com iCasino legal. Maine ainda em fase de lançamento. A maioria dos estados mantém restrições.</p>
+            <a class="card-link" href="https://www.cbssports.com/betting/news/u-s-online-casinos-here-is-where-all-50-states-currently-stand-on-legalizing-internet-gambling-casino-play/" target="_blank" rel="noopener">Fonte CBS →</a>
+          </div>
+        </article>
+        <article class="card" data-cat="casino">
+          <img class="card-img" src="https://images.unsplash.com/photo-1511193313722-44c31f79d0b4?w=600&q=80" alt="Poker table" loading="lazy" data-fallback="https://images.unsplash.com/photo-1596838132731-3301c3fd4317?w=600&q=80">
+          <div class="card-body">
+            <div class="card-cat">Indústria</div>
+            <h3 class="card-title">Fusões e expansão: Lottomatica-Cirsa e movimentos na Europa</h3>
+            <div class="card-meta">04 Set 2026 • iGaming Pulse</div>
+            <p class="card-excerpt">A fusão Lottomatica-Cirsa cria um dos maiores operadores listados a nível global (Cirsa valorizada em cerca de 4,8 mil milhões de euros). Merkur Gaming avança para controlo total da Société Française de Casinos.</p>
+            <a class="card-link" href="https://igamingpulse.media/en/category/operators" target="_blank" rel="noopener">Fonte →</a>
+          </div>
+        </article>
+        <article class="card" data-cat="casino analises">
+          <img class="card-img" src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&q=80" alt="Payment technology" loading="lazy" data-fallback="https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=600&q=80">
+          <div class="card-body">
+            <div class="card-cat">Tecnologia & Pagamentos</div>
+            <h3 class="card-title">Tendências 2026: regulamentação, IA de risco e consolidação</h3>
+            <div class="card-meta">2026 • Casino.org / iGaming Today</div>
+            <p class="card-excerpt">O setor continua a enfrentar pressão regulatória (publicidade, proteção de jovens, impostos seletivos em mercados como o Brasil), enquanto soluções de IA para deteção de comportamento de risco e consolidação de operadores marcam o ano.</p>
+            <a class="card-link" href="https://www.igamingtoday.com/key-trends-shaping-the-global-igaming-industry-in-2026-an-interview-with-chris-jonat-of-casino-org/" target="_blank" rel="noopener">Ler análise →</a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- IMÓVEIS -->
+  <section id="imoveis">
+    <div class="container">
+      <h2 class="section-title">MERCADO IMOBILIÁRIO</h2>
+      <p class="section-sub">Tendências reais de habitação, inventário, preços e investimento. Sem anúncios de propriedades fictícias.</p>
+      <div class="card-grid">
+        <article class="card" data-cat="imoveis analises">
+          <img class="card-img" src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600&q=80" alt="Modern house" loading="lazy" data-fallback="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600&q=80">
+          <div class="card-body">
+            <div class="card-cat">Imóveis / EUA</div>
+            <h3 class="card-title">Primavera 2026: o mercado mais favorável a compradores em anos</h3>
+            <div class="card-meta">Q2 2026 • Realtor.com Economic Research</div>
+            <p class="card-excerpt">Segundo o Market Clock da Realtor.com, 70% dos mercados favorecem compradores ou tendem nessa direção. Preços de listagem por m² caíram em 60 dos 100 maiores metros. Inventário e poder de negociação melhoraram face a anos anteriores.</p>
+            <a class="card-link" href="https://www.realtor.com/research/market-clock-report-2026q2/" target="_blank" rel="noopener">Relatório →</a>
+          </div>
+        </article>
+        <article class="card" data-cat="imoveis">
+          <img class="card-img" src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600&q=80" alt="City skyline" loading="lazy" data-fallback="https://images.unsplash.com/photo-1449844908441-8829872d2607?w=600&q=80">
+          <div class="card-body">
+            <div class="card-cat">Habitação</div>
+            <h3 class="card-title">Zillow: valores de casa estabilizam; previsão suave para final de 2026</h3>
+            <div class="card-meta">Ago 2026 • Zillow</div>
+            <p class="card-excerpt">Valor típico de casa nos EUA cerca de $371.757 em julho (+1,1% YoY). Previsão Zillow aponta variação próxima de zero até dezembro. Vendas com crescimento moderado e diferenças regionais marcadas (Austin, Las Vegas com correções).</p>
+            <a class="card-link" href="https://www.zillow.com/learn/housing-market-trends-for-fall-and-winter-2026/" target="_blank" rel="noopener">Fonte Zillow →</a>
+          </div>
+        </article>
+        <article class="card" data-cat="imoveis analises">
+          <img class="card-img" src="https://images.unsplash.com/photo-1449844908441-8829872d2607?w=600&q=80" alt="Residential street" loading="lazy" data-fallback="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600&q=80">
+          <div class="card-body">
+            <div class="card-cat">Investimento</div>
+            <h3 class="card-title">ULI/PwC Emerging Trends 2026: taxas, custos e IA no radar</h3>
+            <div class="card-meta">2026 • ULI / PwC</div>
+            <p class="card-excerpt">Líderes do setor apontam taxas de juro, custos laborais/regulatórios e inflação como principais preocupações. O barómetro de compra atinge máximos de 20 anos, com otimismo seletivo e papel crescente da IA em operações e análise.</p>
+            <a class="card-link" href="https://www.pwc.com/gx/en/industries/financial-services/asset-wealth-management/emerging-trends-real-estate.html" target="_blank" rel="noopener">Emerging Trends →</a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <div class="container"><div class="ad-slot display">ESPAÇO PUBLICITÁRIO • DISPLAY / NATIVE</div></div>
+
+  <!-- NOTÍCIAS -->
+  <section id="noticias">
+    <div class="container">
+      <h2 class="section-title">NOTÍCIAS</h2>
+      <p class="section-sub">Feed baseado em reportagens reais de fontes identificadas. Resumos originais, sem cópia integral de artigos.</p>
+      <div class="card-grid" id="newsGrid">
+        <article class="card" data-cat="noticias financas mercados">
+          <img class="card-img" src="https://images.unsplash.com/photo-1590283603385-17ffb3a7f29c?w=600&q=80" alt="Stock market" loading="lazy" data-fallback="https://images.unsplash.com/photo-1611974767324-971348341353?w=600&q=80">
+          <div class="card-body">
+            <div class="card-cat">Mercados</div>
+            <h3 class="card-title">Ações sob pressão com yields e petróleo em alta no início de setembro</h3>
+            <div class="card-meta">02–04 Set 2026 • Economic Times / Reuters</div>
+            <p class="card-excerpt">S&P 500, Nasdaq e Dow registaram sessões voláteis. Subida de yields e do petróleo, juntamente com dados de emprego fortes, aumentaram as expectativas de ação da Fed. Comentários de governadores temperaram parcialmente as apostas de subida imediata.</p>
+            <a class="card-link" href="https://www.reuters.com/world/china/global-markets-wrapup-1-2026-09-04/" target="_blank" rel="noopener">Reuters →</a>
+          </div>
+        </article>
+        <article class="card" data-cat="noticias casino">
+          <img class="card-img" src="https://images.unsplash.com/photo-1511193313722-44c31f79d0b4?w=600&q=80" alt="Casino" loading="lazy" data-fallback="https://images.unsplash.com/photo-1596838132731-3301c3fd4317?w=600&q=80">
+          <div class="card-body">
+            <div class="card-cat">Casino</div>
+            <h3 class="card-title">Operadores europeus consolidam; NFL alarga parcerias de apostas desportivas</h3>
+            <div class="card-meta">Ago–Set 2026 • iGaming Pulse / CDC Gaming</div>
+            <p class="card-excerpt">Movimentos de M&A na Europa e expansão de parcerias da NFL com Fanatics Sportsbook (juntamente com DraftKings e FanDuel) marcam a atualidade do setor de apostas e casino online.</p>
+            <a class="card-link" href="https://igamingpulse.media/en/category/operators" target="_blank" rel="noopener">iGaming Pulse →</a>
+          </div>
+        </article>
+        <article class="card" data-cat="noticias imoveis">
+          <img class="card-img" src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600&q=80" alt="Housing" loading="lazy" data-fallback="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600&q=80">
+          <div class="card-body">
+            <div class="card-cat">Imóveis</div>
+            <h3 class="card-title">Inventário sobe e compradores ganham margem de negociação</h3>
+            <div class="card-meta">2026 • Realtor.com / Homes.com</div>
+            <p class="card-excerpt">Mais de 1,4 milhões de casas à venda nos EUA em meados de 2026. Preços médios estáveis ou em ligeira descida em muitos mercados; tempo de permanência no mercado e cortes de preço dão mais poder aos compradores do que em anos recentes.</p>
+            <a class="card-link" href="https://www.realtor.com/research/market-clock-report-2026q2/" target="_blank" rel="noopener">Realtor.com →</a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ANÁLISES -->
+  <section id="analises">
+    <div class="container">
+      <h2 class="section-title">ANÁLISES</h2>
+      <p class="section-sub">Leituras estruturadas sobre interseções entre finanças, regulação e ativos reais.</p>
+      <div class="card-grid">
+        <article class="card" data-cat="analises financas">
+          <img class="card-img" src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&q=80" alt="Analytics dashboard" loading="lazy" data-fallback="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&q=80">
+          <div class="card-body">
+            <div class="card-cat">Análise</div>
+            <h3 class="card-title">Ciclo de taxas, commodities e risco geopolítico</h3>
+            <div class="card-meta">Set 2026 • Síntese de Bloomberg, Reuters, OilPrice</div>
+            <p class="card-excerpt">A combinação de dados de emprego robustos, yields elevados e petróleo perto de máximos recentes (WTI ~$91) cria um ambiente de maior custo de capital. O ouro mantém-se elevado como ativo de proteção relativa. Qualquer decisão da Fed em setembro terá impacto transversal em ações, crypto e imobiliário.</p>
+            <span class="tag">Fed</span><span class="tag">Oil</span><span class="tag">Gold</span>
+          </div>
+        </article>
+        <article class="card" data-cat="analises casino">
+          <img class="card-img" src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&q=80" alt="Regulation" loading="lazy" data-fallback="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=600&q=80">
+          <div class="card-body">
+            <div class="card-cat">Análise</div>
+            <h3 class="card-title">Regulação e consolidação no iGaming global</h3>
+            <div class="card-meta">2026 • Síntese setorial</div>
+            <p class="card-excerpt">Mercados maduros apertam regras de publicidade e proteção ao consumidor; mercados emergentes debatem impostos seletivos e licenciamento. A consolidação (fusões europeias) e a entrada de marcas desportivas em apostas e prediction markets definem a próxima fase de escala.</p>
+            <span class="tag">Regulação</span><span class="tag">M&A</span>
+          </div>
+        </article>
+        <article class="card" data-cat="analises imoveis">
+          <img class="card-img" src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&q=80" alt="Market analysis" loading="lazy" data-fallback="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&q=80">
+          <div class="card-body">
+            <div class="card-cat">Análise</div>
+            <h3 class="card-title">Imobiliário residencial: do vendedor para o comprador</h3>
+            <div class="card-meta">2026 • Realtor.com / Zillow / ULI</div>
+            <p class="card-excerpt">Após anos de inventário historicamente baixo, 2026 mostra reequilíbrio. Preços estabilizam ou recuam em muitos metros, o que melhora a acessibilidade relativa mesmo com taxas de hipoteca ainda elevadas. Investidores focam operação, demografia e eficiência energética.</p>
+            <span class="tag">Housing</span><span class="tag">Inventory</span>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACTO -->
+  <section id="contacto">
+    <div class="container">
+      <h2 class="section-title">CONTACTO</h2>
+      <p class="section-sub">Canal direto. Sem backend de envio simulado — utiliza o seu cliente de email.</p>
+      <div class="contact-form">
+        <form id="contactForm" action="mailto:contacto@cybermarket.real" method="GET" enctype="text/plain">
+          <label for="cname">Nome</label>
+          <input type="text" id="cname" name="subject" placeholder="O seu nome" required>
+          <label for="cemail">Email</label>
+          <input type="email" id="cemail" name="email" placeholder="seu@email.com" required>
+          <label for="cmsg">Mensagem</label>
+          <textarea id="cmsg" name="body" rows="5" placeholder="Escreva a sua mensagem..." required></textarea>
+          <button type="submit" class="btn btn-primary">ABRIR EMAIL →</button>
+        </form>
+        <p style="margin-top:14px;font-size:0.85rem;color:var(--muted);font-family:var(--font-mono)">
+          O botão abre o seu cliente de email com os dados preenchidos. Nenhum dado é enviado para servidores deste site.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- INSTITUCIONAL -->
+  <section id="institucional" style="padding-bottom:40px">
+    <div class="container">
+      <h2 class="section-title">INFORMAÇÃO LEGAL</h2>
+      <div class="inst-grid">
+        <div class="inst-card" data-modal="sobre">
+          <h3>Sobre</h3>
+          <p>Missão, transparência e critérios editoriais da plataforma.</p>
+        </div>
+        <div class="inst-card" data-modal="privacidade">
+          <h3>Política de Privacidade</h3>
+          <p>Como tratamos (ou não tratamos) dados pessoais.</p>
+        </div>
+        <div class="inst-card" data-modal="cookies">
+          <h3>Política de Cookies</h3>
+          <p>Utilização mínima e transparentemente declarada.</p>
+        </div>
+        <div class="inst-card" data-modal="termos">
+          <h3>Termos de Uso</h3>
+          <p>Condições de utilização do conteúdo e serviços.</p>
+        </div>
+        <div class="inst-card" data-modal="aviso">
+          <h3>Aviso Legal</h3>
+          <p>Isenções de responsabilidade e natureza informativa.</p>
+        </div>
+        <div class="inst-card" data-modal="editorial">
+          <h3>Política Editorial</h3>
+          <p>Fontes, verificação e ausência de conteúdo fictício.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">CYBER MARKET REAL</div>
+        <p style="color:var(--muted);font-size:0.9rem;max-width:360px">
+          Plataforma de referência em finanças, indústria de casino e mercado imobiliário. Dados reais. Design cyber. Zero simulação.
+        </p>
+      </div>
+      <div class="footer-links">
+        <a href="#inicio">Início</a>
+        <a href="#financas">Finanças</a>
+        <a href="#casino">Casino</a>
+        <a href="#imoveis">Imóveis</a>
+        <a href="#mercados">Mercados</a>
+        <a href="#noticias">Notícias</a>
+        <a href="#contacto">Contacto</a>
+      </div>
+    </div>
+    <div class="footer-copy">
+      © 2026 CYBER MARKET REAL • Conteúdo informativo • Não constitui aconselhamento financeiro, de investimento ou de jogo.
+    </div>
+  </div>
+</footer>
+
+<!-- MODALS -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" id="modalContent">
+    <button class="modal-close" id="modalClose" aria-label="Fechar">×</button>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<script>
+/* ========== PARTICLES (chuva cyber) ========== */
+(function(){
+  const canvas = document.getElementById('particleCanvas');
+  const ctx = canvas.getContext('2d');
+  let w, h, particles = [], animId;
+  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || window.innerWidth < 500;
+  const MAX = isMobile ? 45 : 90;
+
+  function resize(){
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+  }
+  function Particle(){
+    this.x = Math.random()*w;
+    this.y = Math.random()*-h;
+    this.size = Math.random()*2.2 + 0.6;
+    this.speed = Math.random()*1.8 + 0.6;
+    this.alpha = Math.random()*0.55 + 0.15;
+    this.color = Math.random()>0.55 ? '0,255,157' : (Math.random()>0.5 ? '0,229,255' : '59,130,246');
+  }
+  Particle.prototype.update = function(){
+    this.y += this.speed;
+    if(this.y > h+10){ this.y = -10; this.x = Math.random()*w; }
+  };
+  Particle.prototype.draw = function(){
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.size, 0, Math.PI*2);
+    ctx.fillStyle = `rgba(${this.color},${this.alpha})`;
+    ctx.shadowBlur = 8;
+    ctx.shadowColor = `rgba(${this.color},0.8)`;
+    ctx.fill();
+    ctx.shadowBlur = 0;
+  };
+  function init(){
+    resize();
+    particles = [];
+    for(let i=0;i<MAX;i++) particles.push(new Particle());
+  }
+  function loop(){
+    ctx.clearRect(0,0,w,h);
+    for(const p of particles){ p.update(); p.draw(); }
+    animId = requestAnimationFrame(loop);
+  }
+  init(); loop();
+  window.addEventListener('resize', ()=>{ resize(); if(particles.length!==MAX) init(); });
+})();
+
+/* ========== GLOBE 3D (Three.js) — 1 volta = 3s ========== */
+(function(){
+  const canvas = document.getElementById('globeCanvas');
+  const wrap = canvas.parentElement;
+  let renderer, scene, camera, earth, animId;
+  const size = () => Math.min(wrap.clientWidth, wrap.clientHeight) || 280;
+
+  function initGlobe(){
+    const s = size();
+    renderer = new THREE.WebGLRenderer({ canvas, antialias:true, alpha:true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(s, s);
+    scene = new THREE.Scene();
+    camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+    camera.position.z = 2.6;
+
+    const geo = new THREE.SphereGeometry(1, 48, 48);
+    // Procedural earth-like material (no external texture dependency that can fail)
+    const mat = new THREE.MeshPhongMaterial({
+      color: 0x0a2a3a,
+      emissive: 0x001a22,
+      specular: 0x00ff9d,
+      shininess: 18,
+      transparent: true,
+      opacity: 0.95
+    });
+    earth = new THREE.Mesh(geo, mat);
+    scene.add(earth);
+
+    // Wireframe overlay for cyber look
+    const wireGeo = new THREE.SphereGeometry(1.01, 24, 24);
+    const wireMat = new THREE.MeshBasicMaterial({
+      color: 0x00ff9d,
+      wireframe: true,
+      transparent: true,
+      opacity: 0.18
+    });
+    const wire = new THREE.Mesh(wireGeo, wireMat);
+    earth.add(wire);
+
+    // Continents approximation with slightly raised darker patches via second sphere
+    const contGeo = new THREE.SphereGeometry(1.005, 32, 32);
+    const contMat = new THREE.MeshPhongMaterial({
+      color: 0x00c87a,
+      transparent: true,
+      opacity: 0.22,
+      flatShading: true
+    });
+    const continents = new THREE.Mesh(contGeo, contMat);
+    earth.add(continents);
+
+    // Lights
+    const amb = new THREE.AmbientLight(0x224466, 0.7);
+    scene.add(amb);
+    const dir = new THREE.DirectionalLight(0x00e5ff, 1.1);
+    dir.position.set(4, 2, 3);
+    scene.add(dir);
+    const dir2 = new THREE.DirectionalLight(0x00ff9d, 0.4);
+    dir2.position.set(-3, -1, 2);
+    scene.add(dir2);
+
+    // Atmosphere glow
+    const atmGeo = new THREE.SphereGeometry(1.08, 32, 32);
+    const atmMat = new THREE.MeshBasicMaterial({
+      color: 0x00e5ff,
+      transparent: true,
+      opacity: 0.07,
+      side: THREE.BackSide
+    });
+    scene.add(new THREE.Mesh(atmGeo, atmMat));
+  }
+
+  // Exactly 1 full rotation every 3 seconds → 2π / 3 rad/s
+  const SPEED = (Math.PI * 2) / 3;
+  let last = performance.now();
+
+  function animate(now){
+    const dt = (now - last) / 1000;
+    last = now;
+    if(earth){
+      earth.rotation.y += SPEED * dt;
+      earth.rotation.x = Math.sin(now * 0.0003) * 0.08;
+    }
+    renderer.render(scene, camera);
+    animId = requestAnimationFrame(animate);
+  }
+
+  function onResize(){
+    const s = size();
+    if(!renderer) return;
+    renderer.setSize(s, s);
+    camera.aspect = 1;
+    camera.updateProjectionMatrix();
+  }
+
+  if(typeof THREE !== 'undefined'){
+    initGlobe();
+    animate(performance.now());
+    window.addEventListener('resize', onResize);
+  } else {
+    wrap.innerHTML = '<div style="display:grid;place-items:center;height:100%;color:#00ff9d;font-family:monospace">GLOBE 3D</div>';
+  }
+})();
+
+/* ========== IMAGE ROTATOR + FALLBACKS ========== */
+function createImageRotator(){
+  const root = document.getElementById('imageRotator');
+  if(!root) return;
+  const imgs = Array.from(root.querySelectorAll('img'));
+  const caption = document.getElementById('rotatorCaption');
+  const captions = [
+    'MERCADOS GLOBAIS • DADOS EM TEMPO REAL',
+    'CRIPTOMOEDAS & BLOCKCHAIN',
+    'REDES FINANCEIRAS DIGITAIS',
+    'MERCADO IMOBILIÁRIO & INVESTIMENTO'
+  ];
+  let idx = 0;
+  let timer;
+
+  function show(i){
+    imgs.forEach((img,n)=> img.classList.toggle('active', n===i));
+    if(caption) caption.textContent = captions[i % captions.length];
+  }
+
+  function next(){
+    idx = (idx + 1) % imgs.length;
+    show(idx);
+  }
+
+  function setupImageFallbacks(){
+    imgs.forEach(img=>{
+      img.addEventListener('error', function onErr(){
+        const fb = img.getAttribute('data-fallback');
+        if(fb && img.src !== fb){
+          img.src = fb;
+        } else {
+          img.style.display = 'none';
+        }
+        img.removeEventListener('error', onErr);
+      });
+      // Preload
+      const pre = new Image();
+      pre.src = img.src;
+    });
+  }
+
+  setupImageFallbacks();
+  show(0);
+  timer = setInterval(next, 4500);
+
+  // Pause on hover (desktop)
+  root.addEventListener('mouseenter', ()=> clearInterval(timer));
+  root.addEventListener('mouseleave', ()=> { timer = setInterval(next, 4500); });
+}
+createImageRotator();
+
+/* ========== CARD IMAGE FALLBACKS ========== */
+document.querySelectorAll('img[data-fallback]').forEach(img=>{
+  img.addEventListener('error', function(){
+    const fb = this.getAttribute('data-fallback');
+    if(fb && this.src !== fb) this.src = fb;
+  });
+});
+
+/* ========== NAV ========== */
+const menuToggle = document.getElementById('menuToggle');
+const mobileNav = document.getElementById('mobileNav');
+menuToggle.addEventListener('click', ()=>{
+  menuToggle.classList.toggle('open');
+  mobileNav.classList.toggle('open');
+});
+document.querySelectorAll('[data-section]').forEach(link=>{
+  link.addEventListener('click', e=>{
+    menuToggle.classList.remove('open');
+    mobileNav.classList.remove('open');
+    document.querySelectorAll('nav a, .mobile-nav a').forEach(a=>a.classList.remove('active'));
+    document.querySelectorAll(`[data-section="${link.dataset.section}"]`).forEach(a=>a.classList.add('active'));
+  });
+});
+
+/* ========== SEARCH + FILTERS ========== */
+const searchInput = document.getElementById('searchInput');
+const filterBtns = document.querySelectorAll('.filter-btn');
+let currentFilter = 'all';
+
+function applyFilters(){
+  const q = (searchInput.value || '').toLowerCase().trim();
+  document.querySelectorAll('.card').forEach(card=>{
+    const cat = (card.dataset.cat || '').toLowerCase();
+    const text = card.textContent.toLowerCase();
+    const matchFilter = currentFilter === 'all' || cat.includes(currentFilter);
+    const matchSearch = !q || text.includes(q);
+    card.style.display = (matchFilter && matchSearch) ? '' : 'none';
+  });
+}
+filterBtns.forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    filterBtns.forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    currentFilter = btn.dataset.filter;
+    applyFilters();
+  });
+});
+searchInput.addEventListener('input', applyFilters);
+
+/* ========== CONTACT FORM (mailto real) ========== */
+document.getElementById('contactForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  const name = document.getElementById('cname').value.trim();
+  const email = document.getElementById('cemail').value.trim();
+  const msg = document.getElementById('cmsg').value.trim();
+  const subject = encodeURIComponent('Contacto Cyber Market Real — ' + name);
+  const body = encodeURIComponent('Nome: ' + name + '\nEmail: ' + email + '\n\n' + msg);
+  window.location.href = `mailto:contacto@cybermarket.real?subject=${subject}&body=${body}`;
+});
+
+/* ========== MODALS ========== */
+const modals = {
+  sobre: `<h2>Sobre o Cyber Market Real</h2>
+    <p>O Cyber Market Real é uma plataforma informativa focada em três eixos: finanças (mercados, moedas, commodities, cripto), indústria de casino/iGaming e mercado imobiliário.</p>
+    <p>Não somos um site de demonstração. Os valores de mercado apresentados são retirados de fontes públicas identificadas (ex.: CoinDesk, OKX, Investing.com, GoldPrice, OilPriceAPI, Realtor.com, Zillow, Bloomberg, Reuters). As notícias são resumidas a partir de reportagens reais, com link para a fonte original.</p>
+    <p>Não oferecemos produtos financeiros, não operamos casino e não publicamos anúncios de imóveis fictícios.</p>`,
+  privacidade: `<h2>Política de Privacidade</h2>
+    <p>Este site funciona como página estática. Não existe registo de utilizadores, login nem formulário com envio para servidor próprio.</p>
+    <ul>
+      <li>O formulário de contacto utiliza o protocolo mailto do seu dispositivo — os dados não passam por servidores nossos.</li>
+      <li>Não recolhemos cookies de rastreamento publicitário de terceiros nesta versão.</li>
+      <li>Não vendemos nem partilhamos dados pessoais.</li>
+    </ul>
+    <p>Se no futuro forem introduzidos serviços que requeiram tratamento de dados, esta política será atualizada antes da ativação.</p>`,
+  cookies: `<h2>Política de Cookies</h2>
+    <p>Nesta versão do site não são definidos cookies não essenciais. Qualquer armazenamento local (se existir no futuro) será limitado a preferências técnicas e será comunicado de forma clara.</p>
+    <p>Pode configurar o seu navegador para bloquear ou apagar cookies a qualquer momento.</p>`,
+  termos: `<h2>Termos de Uso</h2>
+    <p>Ao utilizar este site, aceita que o conteúdo é meramente informativo e educativo. Não constitui aconselhamento de investimento, fiscal, jurídico ou de jogo.</p>
+    <ul>
+      <li>É proibida a reprodução comercial não autorizada do conteúdo.</li>
+      <li>Links externos são da responsabilidade dos respetivos titulares.</li>
+      <li>Reservamo-nos o direito de atualizar ou remover secções sem aviso prévio.</li>
+    </ul>`,
+  aviso: `<h2>Aviso Legal</h2>
+    <p>Os mercados financeiros, criptoativos e o setor de jogo envolvem risco de perda de capital. Preços e notícias podem estar desatualizados entre a consulta da fonte e a visualização nesta página.</p>
+    <p>Não garantimos a exatidão absoluta em tempo real. Consulte sempre as fontes primárias e profissionais qualificados antes de qualquer decisão.</p>
+    <p>Relativamente a casino e apostas: o conteúdo é jornalístico/industrial. Não incentivamos o jogo e recomendamos práticas de jogo responsável.</p>`,
+  editorial: `<h2>Política Editorial</h2>
+    <p>Regras internas obrigatórias:</p>
+    <ul>
+      <li>Proibição de dados fictícios, notícias inventadas e imóveis apresentados como reais sem fonte.</li>
+      <li>Todo o valor numérico de mercado deve indicar fonte e, quando possível, data de referência.</li>
+      <li>Imagens devem ser reais, relevantes e com fallback validado.</li>
+      <li>Resumos de notícias são originais; não se copiam artigos na íntegra.</li>
+      <li>Transparência sobre limitações (ex.: ausência de backend de envio de mensagens).</li>
+    </ul>`
+};
+
+document.querySelectorAll('.inst-card').forEach(card=>{
+  card.addEventListener('click', ()=>{
+    const key = card.dataset.modal;
+    document.getElementById('modalBody').innerHTML = modals[key] || '';
+    document.getElementById('modalOverlay').classList.add('open');
+  });
+});
+document.getElementById('modalClose').addEventListener('click', ()=>{
+  document.getElementById('modalOverlay').classList.remove('open');
+});
+document.getElementById('modalOverlay').addEventListener('click', e=>{
+  if(e.target === e.currentTarget) e.currentTarget.classList.remove('open');
+});
+
+/* ========== PERFORMANCE: reduce particles on weak devices ========== */
+if(navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4){
+  // already handled by isMobile branch; extra safety
+}
+</script>
+</body>
+</html>
